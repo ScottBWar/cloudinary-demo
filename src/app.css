@@ -1,0 +1,325 @@
+/* src/App.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: #f8f9fa;
+  }
+  
+  .App {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 40px 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  }
+  
+  .header h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  
+  .header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+  }
+  
+  /* Control Panel */
+  .control-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 20px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    border: 2px solid #e9ecef;
+  }
+  
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+  }
+  
+  .status .optimized {
+    color: #28a745;
+    font-weight: 600;
+  }
+  
+  .status .unoptimized {
+    color: #dc3545;
+    font-weight: 600;
+  }
+  
+  .toggle-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 200px;
+  }
+  
+  .toggle-btn.slow {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+  }
+  
+  .toggle-btn.optimized {
+    background: linear-gradient(135deg, #ffc107, #fd7e14);
+    color: white;
+  }
+  
+  .toggle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
+  
+  .toggle-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  /* Performance Hint */
+  .performance-hint {
+    background: #e7f3ff;
+    border-left: 4px solid #007bff;
+    padding: 15px 20px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 30px;
+  }
+  
+  .performance-hint p {
+    margin: 5px 0;
+  }
+  
+  .warning {
+    color: #856404;
+    background: #fff3cd;
+    border-left-color: #ffc107 !important;
+    background: #fff3cd;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-top: 10px;
+  }
+  
+  /* Hero Section */
+  .hero-section {
+    margin-bottom: 40px;
+  }
+  
+  .hero-section h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #2c3e50;
+  }
+  
+  .hero-image {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .hero-image img {
+    width: 100%;
+    max-width: 800px;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease;
+  }
+  
+  .hero-image img:hover {
+    transform: scale(1.02);
+  }
+  
+  /* Products Section */
+  .products-section h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: #2c3e50;
+  }
+  
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+  }
+  
+  .product-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #e9ecef;
+  }
+  
+  .product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.15);
+  }
+  
+  .product-image {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .product-image img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  
+  .product-card:hover .product-image img {
+    transform: scale(1.05);
+  }
+  
+  .product-info {
+    padding: 20px;
+  }
+  
+  .product-info h3 {
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+    color: #2c3e50;
+  }
+  
+  .price {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #28a745;
+    margin-bottom: 15px;
+  }
+  
+  .add-to-cart {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .add-to-cart:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  }
+  
+  /* Performance Stats */
+  .performance-stats {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+  }
+  
+  .performance-stats h3 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 25px;
+    color: #2c3e50;
+  }
+  
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  
+  .stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+  }
+  
+  .stat .label {
+    font-weight: 600;
+    color: #495057;
+  }
+  
+  .stat .value {
+    font-weight: 500;
+    color: #28a745;
+  }
+  
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 30px;
+    background: #2c3e50;
+    color: white;
+    border-radius: 12px;
+    margin-top: 40px;
+  }
+  
+  .footer p {
+    margin: 5px 0;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .control-panel {
+      flex-direction: column;
+      gap: 15px;
+      text-align: center;
+    }
+    
+    .header h1 {
+      font-size: 2rem;
+    }
+    
+    .product-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* Loading Animation */
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+  }
+  
+  .toggle-btn:disabled {
+    animation: pulse 1.5s infinite;
+  }
