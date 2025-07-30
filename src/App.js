@@ -6,6 +6,25 @@ import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
 import { AdvancedImage } from '@cloudinary/react';
 import './app.css';
 
+
+import { datadogRum } from '@datadog/browser-rum';
+import { reactPlugin } from '@datadog/browser-rum-react';
+
+datadogRum.init({
+    applicationId: '60464aa4-95a0-47ff-8643-1a23528e905a',
+    clientToken: 'pub9144959c13149ab658ae482098a43ff4',
+    site: 'us5.datadoghq.com',
+    service:'<SERVICE-NAME>',
+    env: '<ENV-NAME>',
+    
+    // Specify a version number to identify the deployed version of your application in Datadog
+    version: '0.0.1',
+    sessionSampleRate:  100,
+    sessionReplaySampleRate: 20,
+    defaultPrivacyLevel: 'mask-user-input',
+    plugins: [reactPlugin({ router: false })],
+});
+
 // Your massive product images (these should match your actual image files in public/)
 const products = [
   { id: 1, name: 'Premium Product 1', image: 'car1', price: '$299' },
