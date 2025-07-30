@@ -5,25 +5,9 @@ import { auto } from '@cloudinary/url-gen/actions/resize';
 import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
 import { AdvancedImage } from '@cloudinary/react';
 import './app.css';
-
-
 import { datadogRum } from '@datadog/browser-rum';
 import { reactPlugin } from '@datadog/browser-rum-react';
 
-datadogRum.init({
-    applicationId: '60464aa4-95a0-47ff-8643-1a23528e905a',
-    clientToken: 'pub9144959c13149ab658ae482098a43ff4',
-    site: 'us5.datadoghq.com',
-    service:'service-1',
-    env: 'env-1',
-    
-    // Specify a version number to identify the deployed version of your application in Datadog
-    // version: '1.0.0',
-    sessionSampleRate:  100,
-    sessionReplaySampleRate: 20,
-    defaultPrivacyLevel: 'mask-user-input',
-    plugins: [reactPlugin({ router: true })],
-});
 
 // Your massive product images (these should match your actual image files in public/)
 const products = [
@@ -66,6 +50,33 @@ function App() {
       }, 300);
     };
   
+    // Initialize DataDog RUM properly
+    useEffect(() => {
+        try {
+            datadogRum.init({
+                applicationId: '60464aa4-95a0-47ff-8643-1a23528e905a',
+                clientToken: 'pub9144959c13149ab658ae482098a43ff4',
+                site: 'us5.datadoghq.com',
+                service: 'cloudinary-demo',
+                env: 'production',
+                version: '1.0.0',
+                sessionSampleRate: 100,
+                sessionReplaySampleRate: 20,
+                trackResources: true,
+                trackLongTasks: true,
+                defaultPrivacyLevel: 'mask-user-input'
+            });
+
+            // Start session replay recording
+            datadogRum.startSessionReplayRecording();
+            
+            console.log('🐕 DataDog RUM initialized successfully!');
+        } catch (error) {
+            console.error('❌ DataDog RUM initialization failed:', error);
+        }
+    }, []); // Only run once on mount
+      
+
     // Force re-render when toggle changes
     useEffect(() => {
       console.log('✨ useCloudinary changed to:', useCloudinary, 'forceRerender:', forceRerender);
