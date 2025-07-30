@@ -20,7 +20,7 @@ function App() {
   const getImageUrl = (imagePath) => {
     if (useCloudinary) {
       // Cloudinary optimization: auto format, auto quality, width 400px
-      return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/fetch/f_auto,q_auto,w_400,c_fill,g_center/${window.location.origin}${imagePath}`;
+      return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/fetch/f_auto,q_auto,w_400,c_fill,g_center/https://scottbwar.github.io/cloudinary-demo${imagePath}`;
     }
     // Original massive image
     return imagePath;
