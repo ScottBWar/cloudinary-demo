@@ -59,6 +59,14 @@ function Store({ mode }) {
       });
       
       console.log(`🐕 DataDog RUM initialized with React Router support - route: ${location.pathname}`);
+
+      // ADD THESE DEBUG LINES:
+      console.log('🐕 DataDog init called');
+      console.log('DataDog object:', datadogRum);
+      console.log('Window DD_RUM:', window.DD_RUM);
+    
+
+
     } catch (error) {
       console.error('❌ DataDog RUM initialization failed:', error);
     }
