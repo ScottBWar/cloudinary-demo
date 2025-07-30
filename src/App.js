@@ -14,15 +14,15 @@ datadogRum.init({
     applicationId: '60464aa4-95a0-47ff-8643-1a23528e905a',
     clientToken: 'pub9144959c13149ab658ae482098a43ff4',
     site: 'us5.datadoghq.com',
-    service:'<SERVICE-NAME>',
-    env: '<ENV-NAME>',
+    service:'service-1',
+    env: 'env-1',
     
     // Specify a version number to identify the deployed version of your application in Datadog
-    version: '0.0.1',
+    // version: '1.0.0',
     sessionSampleRate:  100,
     sessionReplaySampleRate: 20,
     defaultPrivacyLevel: 'mask-user-input',
-    plugins: [reactPlugin({ router: false })],
+    plugins: [reactPlugin({ router: true })],
 });
 
 // Your massive product images (these should match your actual image files in public/)
