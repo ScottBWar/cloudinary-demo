@@ -7,15 +7,29 @@ import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
 import { AdvancedImage } from '@cloudinary/react';
 import { datadogRum } from '@datadog/browser-rum';
 import { reactPlugin } from '@datadog/browser-rum-react';
+import { Overlay } from '@cloudinary/url-gen/actions';
+import { Position } from '@cloudinary/url-gen/qualifiers';
+import { text } from '@cloudinary/url-gen/qualifiers/source';
 import './app.css';
 
 // Your massive product images
 const products = [
-  { id: 1, name: 'Premium Product 1', image: 'car1', price: '$299' },
-  { id: 2, name: 'Premium Product 2', image: 'car2', price: '$399' },
-  { id: 3, name: 'Premium Product 3', image: 'car3', price: '$199' },
-  { id: 4, name: 'Premium Product 4', image: 'car4', price: '$199' },
-];
+    { id: 1, name: 'Ferrari 488 GTB', image: 'car1', price: '$280,000' },
+    { id: 2, name: 'Trek Domane SLR', image: 'bike1', price: '$4,200' },
+    { id: 3, name: 'Ferrari F8 Tributo', image: 'car2', price: '$276,550' },
+    { id: 4, name: 'Specialized S-Works', image: 'bike2', price: '$8,500' },
+    { id: 5, name: 'Canyon Aeroad CFR', image: 'bike3', price: '$3,800' },
+    { id: 6, name: 'Ferrari 812 Superfast', image: 'car3', price: '$365,000' },
+    { id: 7, name: 'McLaren 720S', image: 'car4', price: '$299,000' },
+    { id: 8, name: 'Pinarello Dogma F', image: 'bike4', price: '$6,750' },
+    { id: 9, name: 'Giant TCR Advanced', image: 'bike5', price: '$2,400' },
+    { id: 10, name: 'Ferrari Roma', image: 'car5', price: '$222,620' },
+    { id: 11, name: 'Lamborghini Huracán', image: 'car6', price: '$248,295' },
+    { id: 12, name: 'Cervélo S5', image: 'bike6', price: '$5,200' },
+    { id: 13, name: 'Porsche 911 Turbo S', image: 'car7', price: '$207,000' },
+    { id: 14, name: 'Bianchi Oltre XR4', image: 'bike7', price: '$4,800' },
+    { id: 15, name: 'Aston Martin DB11', image: 'car8', price: '$205,600' },
+  ];
 
 // Store component that handles the actual display
 function Store({ mode }) {
@@ -67,13 +81,12 @@ function Store({ mode }) {
     return img;
   };
 
-  const getStudioBackgroundImage = (imageName) => {
+  const getStudioBackgroundImage = (imageName, price) => {
     const img = cld
       .image(imageName)
-      .format('auto')
-      .quality('auto')
-      .namedTransformation('dealership-showroom');
-    
+      .namedTransformation('t_dealership-showroom')
+      .addTransformation(`l_text:Arial_60_bold:${price},co_white,g_south_east,x_20,y_20`)
+
     console.log(`🔗 Studio background URL for ${imageName}:`, img.toURL());
     return img;
   };
@@ -199,7 +212,7 @@ function Store({ mode }) {
                   {useStudioMode && (
                       <AdvancedImage 
                       key={`studio-${product.id}`}
-                      cldImg={getStudioBackgroundImage(product.image)} 
+                      cldImg={getStudioBackgroundImage(product.image, product.price)} 
                       alt={product.name}
                       style={{ width: '100%', height: '250px', objectFit: 'cover' }}
                       />
