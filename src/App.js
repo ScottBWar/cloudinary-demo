@@ -16,21 +16,27 @@ const products = [
 function App() {
     const [useCloudinary, setUseCloudinary] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [cacheBreaker, setCacheBreaker] = useState(0);
   
     // Initialize Cloudinary with your cloud name
     const cld = new Cloudinary({ cloud: { cloudName: 'dj7hg86pg' } });
   
     const getOptimizedImage = (imageName) => {
-      return cld
+      const baseImage = cld
         .image(imageName)
         .format('auto')              // Auto format (WebP, AVIF when supported)
         .quality('auto')             // Auto quality optimization
         .resize(auto().gravity(autoGravity()).width(400).height(300)); // Smart crop to 400x300
+      
+      // Add cache buster to Cloudinary URL too
+      return baseImage.addTransformation(`cache_${Date.now()}_${Math.random().toString(36)}`);
     };
   
     const handleToggle = () => {
       setIsLoading(true);
       setUseCloudinary(!useCloudinary);
+      // Force fresh reload by changing cache breaker
+      setCacheBreaker(prev => prev + 1);
       
       // Brief loading state for dramatic effect
       setTimeout(() => {
@@ -80,6 +86,7 @@ function App() {
           <div className="hero-image">
             {useCloudinary ? (
               <AdvancedImage 
+                key={`hero-cloudinary-${cacheBreaker}`}
                 cldImg={getOptimizedImage('hero')} 
                 alt="Hero Product"
                 onLoad={() => console.log('Cloudinary hero image loaded')}
@@ -87,7 +94,8 @@ function App() {
               />
             ) : (
               <img 
-                src={`${process.env.PUBLIC_URL}/hero.jpg`} 
+                key={`hero-original-${cacheBreaker}`}
+                src={`${process.env.PUBLIC_URL}/hero.jpg?cache=${Date.now()}-${Math.random()}`} 
                 alt="Hero Product"
                 onLoad={() => console.log('Original hero image loaded')}
                 onError={(e) => console.error('Failed to load original image:', e)}
@@ -105,17 +113,17 @@ function App() {
                 <div className="product-image">
                   {useCloudinary ? (
                     <AdvancedImage 
+                      key={`cloudinary-${product.id}-${cacheBreaker}`}
                       cldImg={getOptimizedImage(product.image)} 
                       alt={product.name}
-                      loading="lazy"
                       onLoad={() => console.log(`Cloudinary ${product.name} loaded`)}
                       onError={(e) => console.error(`Failed to load Cloudinary image for ${product.name}:`, e)}
                     />
                   ) : (
                     <img 
-                      src={`${process.env.PUBLIC_URL}/${product.image}.jpg`} 
+                      key={`original-${product.id}-${cacheBreaker}`}
+                      src={`${process.env.PUBLIC_URL}/${product.image}.jpg?cache=${Date.now()}-${Math.random()}`} 
                       alt={product.name}
-                      loading="lazy"
                       onLoad={() => console.log(`Original ${product.name} loaded`)}
                       onError={(e) => console.error(`Failed to load original image for ${product.name}:`, e)}
                     />
