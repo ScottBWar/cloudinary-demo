@@ -38,9 +38,6 @@ function Store({ mode }) {
         version: '1.0.0',
         sessionSampleRate: 100,
         sessionReplaySampleRate: 0,
-        trackResources: false,
-        trackLongTasks: false, 
-        trackUserInteractions: false,
         defaultPrivacyLevel: 'mask-user-input',
         plugins: [
           reactPlugin({ router: true }) // Enable React Router tracking
@@ -63,7 +60,8 @@ function Store({ mode }) {
       .image(imageName)
       .format('auto')
       .quality('auto') 
-      .resize(auto().gravity(autoGravity()).width(400).height(300));
+      .resize(auto().gravity(autoGravity()).width(400).height(300))
+      
     
     console.log(`🔗 Cloudinary URL for ${imageName}:`, img.toURL());
     return img;
@@ -75,8 +73,7 @@ function Store({ mode }) {
       .format('auto')
       .quality('auto')
       .resize(auto().gravity(autoGravity()).width(400).height(300))
-      .effect('background_removal')
-      .backgroundColor('#f8f9fa');
+      .namedTransformation('dealership-showroom');
     
     console.log(`🔗 Studio background URL for ${imageName}:`, img.toURL());
     return img;
