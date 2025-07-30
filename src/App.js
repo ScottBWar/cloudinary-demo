@@ -128,10 +128,10 @@ function Store({ mode }) {
         
         {/* Header */}
         <header style={{ textAlign: 'center', marginBottom: '30px' }}>
-          <h1 style={{ color: '#333', marginBottom: '10px' }}>SlowStore - Premium E-commerce</h1>
-          <p style={{ color: '#666' }}>Experience the difference optimization makes</p>
+          <h1 style={{ color: '#333', marginBottom: '10px' }}>Welcome to SlowStore - Premium E-commerce</h1>
+          <p style={{ color: '#666' }}>An Iamge Optimization / Customization Demo with Cloudinary </p>
           <div style={{ fontSize: '12px', color: '#28a745', marginTop: '5px' }}>
-            🐕 DataDog RUM Active - Route: {location.pathname}
+             Monitoring Route: {location.pathname}
           </div>
         </header>
 
@@ -175,7 +175,7 @@ function Store({ mode }) {
           </Link>
         </div>
 
-        {/* Performance Hint */}
+        {/* Performance Hint
         <div style={{ 
           backgroundColor: '#e7f3ff', 
           padding: '15px', 
@@ -192,7 +192,7 @@ function Store({ mode }) {
           <p style={{ margin: '0', fontSize: '12px', color: '#004085' }}>
             📋 <strong>Routes:</strong> /standard • /optimized • /studio
           </p>
-        </div>
+        </div> */}
 
         {/* Product Grid */}
         <section>
