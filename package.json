@@ -18,7 +18,7 @@
   "bugs": {
     "url": "https://github.com/ScottBWar/cloudinary-demo/issues"
   },
-  "homepage": "https://ScottBWar.github.io/cloudinary-demo",
+  "homepage": "/cloudinary-demo",
   "dependencies": {
     "@cloudinary/react": "^1.14.3",
     "@cloudinary/url-gen": "^1.21.0",

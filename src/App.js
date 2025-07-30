@@ -1,6 +1,7 @@
 // src/App.js
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Link, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter } from '@datadog/browser-rum-react/react-router-v6';
 import { Cloudinary } from '@cloudinary/url-gen';
 import { auto } from '@cloudinary/url-gen/actions/resize';
 import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
@@ -31,6 +32,7 @@ const products = [
     { id: 15, name: 'Aston Martin DB11', image: 'car8', price: '$205,600' },
   ];
 
+
 // Store component that handles the actual display
 function Store({ mode }) {
   const location = useLocation();
@@ -53,44 +55,6 @@ const handleToggle = () => {
   }
   window.location.href = `${window.location.origin}${targetPath}`;
 };
-
-  // Initialize DataDog RUM once with React Router support
-  useEffect(() => {
-    try {
-      datadogRum.init({
-        applicationId: '60464aa4-95a0-47ff-8643-1a23528e905a',
-        clientToken: 'pub9144959c13149ab658ae482098a43ff4',
-        site: 'us5.datadoghq.com',
-        service: 'cloudinary-demo',
-        env: 'production',
-        version: '1.0.0',
-        sessionSampleRate: 100,
-        sessionReplaySampleRate: 0,
-        defaultPrivacyLevel: 'mask-user-input',
-        plugins: [
-          reactPlugin({ router: true }) // Enable React Router tracking
-        ]
-      });
-      
-      console.log(`🐕 DataDog RUM initialized with React Router support - route: ${location.pathname}`);
-
-      // ADD THESE DEBUG LINES:
-      console.log('🐕 DataDog init called');
-      console.log('DataDog object:', datadogRum);
-      console.log('Window DD_RUM:', window.DD_RUM);
-
-      datadogRum.getInternalContext((context) => {
-        console.log('🧠 RUM Context:', context);
-      });
-
-      datadogRum.addAction("TestAction", { key: "test value" });
-    
-
-
-    } catch (error) {
-      console.error('❌ DataDog RUM initialization failed:', error);
-    }
-  }, []);
 
   // Track route changes for DataDog
   useEffect(() => {
@@ -376,16 +340,28 @@ const handleToggle = () => {
 }
 
 function App() {
-  return (
-    <Router basename="/cloudinary-demo">
-      <Routes>
-        <Route path="/" element={<Store mode="standard" />} />
-        <Route path="/standard" element={<Store mode="standard" />} />
-        <Route path="/optimized" element={<Store mode="optimized" />} />
-        <Route path="/studio" element={<Store mode="studio" />} />
-      </Routes>
-    </Router>
-  );
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <Store mode="standard" />,
+    },
+    {
+      path: '/standard',
+      element: <Store mode="standard" />,
+    },
+    {
+      path: '/optimized',
+      element: <Store mode="optimized" />,
+    },
+    {
+      path: '/studio',
+      element: <Store mode="studio" />,
+    }
+  ],
+  {
+    basename: '/cloudinary-demo', // ✅ Important!
+  });
+  return <RouterProvider router={router} />;
 }
 
 export default App;
