@@ -82,10 +82,13 @@ function Store({ mode }) {
   };
 
   const getStudioBackgroundImage = (imageName, price) => {
+      // URL encode the price to handle commas
+      const encodedPrice = encodeURIComponent(price);
+
     const img = cld
       .image(imageName)
       .namedTransformation('t_dealership-showroom')
-      .addTransformation(`l_text:Arial_60_bold:${price},co_white,g_south_east,x_20,y_20`)
+      .addTransformation(`l_text:Arial_60_bold:${encodedPrice},co_white,g_south_east,x_20,y_20`)
 
     console.log(`🔗 Studio background URL for ${imageName}:`, img.toURL());
     return img;
