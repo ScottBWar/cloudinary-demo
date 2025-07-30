@@ -10,7 +10,7 @@ import './app.css';
 const products = [
   { id: 1, name: 'Premium Product 1', image: 'car1', price: '$299' },
   { id: 2, name: 'Premium Product 2', image: 'car2', price: '$399' },
-  { id: 3, name: 'Premium Product 3', image: 'pcar3', price: '$199' },
+  { id: 3, name: 'Premium Product 3', image: 'car3', price: '$199' },
 ];
 
 function App() {
@@ -87,7 +87,7 @@ function App() {
             />
           ) : (
             <img 
-              src="/hero.jpg" 
+              src={`${process.env.PUBLIC_URL}/hero.jpg`} 
               alt="Hero Product"
               onLoad={() => console.log('Original hero image loaded')}
               onError={(e) => console.error('Failed to load original image:', e)}
@@ -117,7 +117,7 @@ function App() {
                   />
                 ) : (
                   <img 
-                    src={`/${product.image}.jpg`} 
+                    src={`${process.env.PUBLIC_URL}/${product.image}.jpg`} 
                     alt={product.name}
                     loading="lazy"
                     onLoad={() => console.log(`Original ${product.name} loaded`)}
