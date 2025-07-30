@@ -1,29 +1,31 @@
 // src/App.js
 import React, { useState } from 'react';
+import { Cloudinary } from '@cloudinary/url-gen';
+import { auto } from '@cloudinary/url-gen/actions/resize';
+import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
+import { AdvancedImage } from '@cloudinary/react';
 import './app.css';
 
-// Your massive product images (replace with your actual image filenames)
+// Your massive product images (these should match your actual image files in public/)
 const products = [
-  { id: 1, name: 'Premium Product 1', image: './car1.jpg', price: '$299' },
-  { id: 2, name: 'Premium Product 2', image: './car2.jpg', price: '$399' },
-  { id: 3, name: 'Premium Product 3', image: './car3.jpg', price: '$199' },
-  { id: 4, name: 'Premium Product 3', image: './car4.jpg', price: '$199' },
+  { id: 1, name: 'Premium Product 1', image: 'car1', price: '$299' },
+  { id: 2, name: 'Premium Product 2', image: 'car2', price: '$399' },
+  { id: 3, name: 'Premium Product 3', image: 'pcar3', price: '$199' },
 ];
 
 function App() {
   const [useCloudinary, setUseCloudinary] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Replace with your actual Cloudinary cloud name
-  const CLOUDINARY_CLOUD_NAME = 'dj7hg86pg';
+  // Initialize Cloudinary with your cloud name
+  const cld = new Cloudinary({ cloud: { cloudName: 'dj7hg86pg' } });
 
-  const getImageUrl = (imagePath) => {
-    if (useCloudinary) {
-      // Cloudinary optimization: auto format, auto quality, width 400px
-      return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/fetch/f_auto,q_auto,w_400,c_fill,g_center/https://scottbwar.github.io/cloudinary-demo${imagePath}`;
-    }
-    // Original massive image
-    return imagePath;
+  const getOptimizedImage = (imageName) => {
+    return cld
+      .image(imageName)
+      .format('auto')              // Auto format (WebP, AVIF when supported)
+      .quality('auto')             // Auto quality optimization
+      .resize(auto().gravity(autoGravity()).width(400).height(300)); // Smart crop to 400x300
   };
 
   const handleToggle = () => {
@@ -76,11 +78,21 @@ function App() {
       <section className="hero-section">
         <h2>Featured Products</h2>
         <div className="hero-image">
-          <img 
-            src={getImageUrl('/hero.jpg')} 
-            alt="Hero Product"
-            onLoad={() => console.log('Hero image loaded')}
-          />
+          {useCloudinary ? (
+            <AdvancedImage 
+              cldImg={getOptimizedImage('hero')} 
+              alt="Hero Product"
+              onLoad={() => console.log('Cloudinary hero image loaded')}
+              onError={(e) => console.error('Failed to load Cloudinary image:', e)}
+            />
+          ) : (
+            <img 
+              src="/hero.jpg" 
+              alt="Hero Product"
+              onLoad={() => console.log('Original hero image loaded')}
+              onError={(e) => console.error('Failed to load original image:', e)}
+            />
+          )}
         </div>
       </section>
 
@@ -91,12 +103,27 @@ function App() {
           {products.map(product => (
             <div key={product.id} className="product-card">
               <div className="product-image">
-                <img 
-                  src={getImageUrl(product.image)} 
-                  alt={product.name}
-                  loading="lazy"
-                  onLoad={() => console.log(`${product.name} loaded`)}
-                />
+                {useCloudinary ? (
+                  <AdvancedImage 
+                    cldImg={getOptimizedImage(product.image)} 
+                    alt={product.name}
+                    loading="lazy"
+                    onLoad={() => console.log(`Cloudinary ${product.name} loaded`)}
+                    onError={(e) => {
+                      console.error(`Failed to load Cloudinary image for ${product.name}:`, e);
+                      // Fallback to original image on error
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <img 
+                    src={`/${product.image}.jpg`} 
+                    alt={product.name}
+                    loading="lazy"
+                    onLoad={() => console.log(`Original ${product.name} loaded`)}
+                    onError={(e) => console.error(`Failed to load original image for ${product.name}:`, e)}
+                  />
+                )}
               </div>
               <div className="product-info">
                 <h3>{product.name}</h3>
@@ -122,11 +149,11 @@ function App() {
           </div>
           <div className="stat">
             <span className="label">Resize:</span>
-            <span className="value">{useCloudinary ? 'Dynamic (400px)' : 'Original (4000px+)'}</span>
+            <span className="value">{useCloudinary ? 'Smart Crop (400x300)' : 'Original (4000px+)'}</span>
           </div>
           <div className="stat">
             <span className="label">CDN:</span>
-            <span className="value">{useCloudinary ? 'Global Edge Network' : 'Single Server'}</span>
+            <span className="value">{useCloudinary ? 'Global Edge Network' : 'GitHub Pages'}</span>
           </div>
         </div>
       </div>
@@ -135,6 +162,9 @@ function App() {
       <footer className="footer">
         <p>💻 <strong>Monitor this performance with Datadog RUM</strong></p>
         <p>Track Core Web Vitals, page load times, and user experience metrics in real-time</p>
+        <div style={{ marginTop: '10px', fontSize: '0.9em', opacity: '0.8' }}>
+          <p>🔧 <strong>Tech Stack:</strong> React + Cloudinary SDK + GitHub Actions + Datadog RUM</p>
+        </div>
       </footer>
     </div>
   );
