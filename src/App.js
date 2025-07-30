@@ -78,6 +78,12 @@ const handleToggle = () => {
       console.log('🐕 DataDog init called');
       console.log('DataDog object:', datadogRum);
       console.log('Window DD_RUM:', window.DD_RUM);
+
+      datadogRum.getInternalContext((context) => {
+        console.log('🧠 RUM Context:', context);
+      });
+
+      datadogRum.addAction("TestAction", { key: "test value" });
     
 
 
