@@ -40,6 +40,20 @@ function Store({ mode }) {
   // Initialize Cloudinary
   const cld = new Cloudinary({ cloud: { cloudName: 'dj7hg86pg' } });
 
+
+  // Navigate to the other route with full page reload
+const handleToggle = () => {
+  let targetPath;
+  if (useStudioMode) {
+    targetPath = '/cloudinary-demo/standard';
+  } else if (useCloudinary) {
+    targetPath = '/cloudinary-demo/studio';
+  } else {
+    targetPath = '/cloudinary-demo/optimized';
+  }
+  window.location.href = `${window.location.origin}${targetPath}`;
+};
+
   // Initialize DataDog RUM once with React Router support
   useEffect(() => {
     try {
@@ -257,7 +271,9 @@ function Store({ mode }) {
                   }}>
                     {product.price}
                   </p>
-                  <button style={{
+                  <button 
+                  onClick={handleToggle}
+                  style={{
                     backgroundColor: '#007bff',
                     color: 'white',
                     border: 'none',
