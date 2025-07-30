@@ -129,7 +129,8 @@ function Store({ mode }) {
         {/* Header */}
         <header style={{ textAlign: 'center', marginBottom: '30px' }}>
           <h1 style={{ color: '#333', marginBottom: '10px' }}>Welcome to SlowStore - Premium E-commerce</h1>
-          <p style={{ color: '#666' }}>An Iamge Optimization / Customization Demo with Cloudinary </p>
+          <p style={{ color: '#666' }}>An Image Optimization / Customization Demo with Cloudinary </p>
+          <p style={{ color: '#666' }}>Optimize Performance & Apply AI Transformations with no Performance Sacrifices </p>
           <div style={{ fontSize: '12px', color: '#28a745', marginTop: '5px' }}>
              Monitoring Route: {location.pathname}
           </div>
