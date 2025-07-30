@@ -11,6 +11,8 @@ datadogRum.init({
   sessionReplaySampleRate: 20,
   defaultPrivacyLevel: 'mask-user-input',
   plugins: [reactPlugin({ router: true })],
+  trackResources: true, // ✅ ADD THIS
+  trackLongTasks: true, // ✅ Helps see JS blocking tasks
 });
 
 console.log('✅ DataDog RUM initialized globally');

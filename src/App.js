@@ -58,7 +58,8 @@ const handleToggle = () => {
 
   // Track route changes for DataDog
   useEffect(() => {
-    console.log(`📊 Route changed to: ${location.pathname}`);
+    datadogRum.startView(location.pathname);
+    console.log(`📊 Route changed to: ${location.pathname}, starView called`);
   }, [location.pathname]);
 
   const getOptimizedImage = (imageName) => {
