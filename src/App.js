@@ -87,8 +87,7 @@ function Store({ mode }) {
 
     const img = cld
       .image(imageName)
-      .namedTransformation('t_dealership-showroom')
-      .addTransformation('v_2')
+      .namedTransformation('t_dealership-showroom-v2')
       .addTransformation(`l_text:Arial_60_bold:${encodedPrice},co_white,g_south_east,x_20,y_20`)
 
     console.log(`🔗 Studio background URL for ${imageName}:`, img.toURL());
