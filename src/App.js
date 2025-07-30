@@ -72,7 +72,6 @@ function Store({ mode }) {
       .image(imageName)
       .format('auto')
       .quality('auto')
-      .resize(auto().gravity(autoGravity()).width(400).height(300))
       .namedTransformation('dealership-showroom');
     
     console.log(`🔗 Studio background URL for ${imageName}:`, img.toURL());
