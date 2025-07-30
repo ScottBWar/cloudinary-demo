@@ -32,10 +32,10 @@ function App() {
       setIsLoading(true);
       setUseCloudinary(!useCloudinary);
       
-      // Brief loading state
+      // Brief loading state for dramatic effect
       setTimeout(() => {
         setIsLoading(false);
-      }, 300);
+      }, 500);
     };
   
     return (
@@ -102,42 +102,24 @@ function App() {
           <div className="product-grid">
             {products.map(product => (
               <div key={product.id} className="product-card">
-                <div className="product-image" style={{ position: 'relative' }}>
-                  {/* Original image - always rendered */}
-                  <img 
-                    src={`${process.env.PUBLIC_URL}/${product.image}.jpg`} 
-                    alt={product.name}
-                    loading="lazy"
-                    style={{ 
-                      opacity: useCloudinary ? 0 : 1,
-                      transition: 'opacity 0.3s ease',
-                      position: useCloudinary ? 'absolute' : 'static',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover'
-                    }}
-                    onLoad={() => console.log(`Original ${product.name} loaded`)}
-                  />
-                  
-                  {/* Cloudinary image - always rendered */}
-                  <AdvancedImage 
-                    cldImg={getOptimizedImage(product.image)} 
-                    alt={product.name}
-                    loading="lazy"
-                    style={{ 
-                      opacity: useCloudinary ? 1 : 0,
-                      transition: 'opacity 0.3s ease',
-                      position: useCloudinary ? 'static' : 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover'
-                    }}
-                    onLoad={() => console.log(`Cloudinary ${product.name} loaded`)}
-                  />
+                <div className="product-image">
+                  {useCloudinary ? (
+                    <AdvancedImage 
+                      cldImg={getOptimizedImage(product.image)} 
+                      alt={product.name}
+                      loading="lazy"
+                      onLoad={() => console.log(`Cloudinary ${product.name} loaded`)}
+                      onError={(e) => console.error(`Failed to load Cloudinary image for ${product.name}:`, e)}
+                    />
+                  ) : (
+                    <img 
+                      src={`${process.env.PUBLIC_URL}/${product.image}.jpg`} 
+                      alt={product.name}
+                      loading="lazy"
+                      onLoad={() => console.log(`Original ${product.name} loaded`)}
+                      onError={(e) => console.error(`Failed to load original image for ${product.name}:`, e)}
+                    />
+                  )}
                 </div>
                 <div className="product-info">
                   <h3>{product.name}</h3>
