@@ -1,5 +1,5 @@
 // src/App.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Cloudinary } from '@cloudinary/url-gen';
 import { auto } from '@cloudinary/url-gen/actions/resize';
 import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
@@ -11,165 +11,255 @@ const products = [
   { id: 1, name: 'Premium Product 1', image: 'car1', price: '$299' },
   { id: 2, name: 'Premium Product 2', image: 'car2', price: '$399' },
   { id: 3, name: 'Premium Product 3', image: 'car3', price: '$199' },
+  { id: 4, name: 'Premium Product 4', image: 'car4', price: '$199' },
 ];
 
 function App() {
     const [useCloudinary, setUseCloudinary] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [cacheBreaker, setCacheBreaker] = useState(0);
+    const [forceRerender, setForceRerender] = useState(0);
   
-    // Initialize Cloudinary with your cloud name
+    // Initialize Cloudinary
     const cld = new Cloudinary({ cloud: { cloudName: 'dj7hg86pg' } });
   
     const getOptimizedImage = (imageName) => {
-      const baseImage = cld
+      const img = cld
         .image(imageName)
-        .format('auto')              // Auto format (WebP, AVIF when supported)
-        .quality('auto')             // Auto quality optimization
-        .resize(auto().gravity(autoGravity()).width(400).height(300)); // Smart crop to 400x300
+        .format('auto')
+        .quality('auto')
+        .resize(auto().gravity(autoGravity()).width(400).height(300));
       
-      // Add cache buster to Cloudinary URL too
-      return baseImage.addTransformation(`cache_${Date.now()}_${Math.random().toString(36)}`);
+      // Debug: Log the generated URL
+      console.log(`🔗 Cloudinary URL for ${imageName}:`, img.toURL());
+      return img;
     };
   
     const handleToggle = () => {
+      console.log('🔄 Toggle clicked! Current useCloudinary:', useCloudinary);
       setIsLoading(true);
-      setUseCloudinary(!useCloudinary);
-      // Force fresh reload by changing cache breaker
-      setCacheBreaker(prev => prev + 1);
       
-      // Brief loading state for dramatic effect
       setTimeout(() => {
+        const newValue = !useCloudinary;
+        console.log('🔄 Setting useCloudinary to:', newValue);
+        setUseCloudinary(newValue);
+        setForceRerender(prev => prev + 1); // Force complete re-render
         setIsLoading(false);
-      }, 500);
+      }, 300);
     };
   
+    // Force re-render when toggle changes
+    useEffect(() => {
+      console.log('✨ useCloudinary changed to:', useCloudinary, 'forceRerender:', forceRerender);
+    }, [useCloudinary, forceRerender]);
+  
     return (
-      <div className="App">
-        {/* Header */}
-        <header className="header">
-          <h1>SlowStore - Premium E-commerce</h1>
-          <p>Experience the difference optimization makes</p>
-        </header>
-  
-        {/* Control Panel */}
-        <div className="control-panel">
-          <div className="status">
-            <strong>Current Status:</strong> 
-            <span className={useCloudinary ? 'optimized' : 'unoptimized'}>
-              {useCloudinary ? '⚡ Cloudinary Optimized' : '🐌 Unoptimized Images'}
-            </span>
-          </div>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px', backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+        <div style={{ backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0,0,0,0.1)', padding: '30px' }}>
           
-          <button 
-            className={`toggle-btn ${useCloudinary ? 'optimized' : 'slow'}`}
-            onClick={handleToggle}
-            disabled={isLoading}
-          >
-            {isLoading ? '⏳ Loading...' : (
-              useCloudinary ? '🐌 Show Original (Slow)' : '⚡ Enable Cloudinary'
-            )}
-          </button>
-        </div>
+          {/* Header */}
+          <header style={{ textAlign: 'center', marginBottom: '30px' }}>
+            <h1 style={{ color: '#333', marginBottom: '10px' }}>SlowStore - Premium E-commerce</h1>
+            <p style={{ color: '#666' }}>Experience the difference optimization makes</p>
+          </header>
   
-        {/* Performance Hint */}
-        <div className="performance-hint">
-          <p>💡 <strong>Demo Tip:</strong> Open DevTools → Network tab to see the file size difference!</p>
-          {!useCloudinary && (
-            <p className="warning">⚠️ Warning: Loading large unoptimized images...</p>
-          )}
-        </div>
-  
-        {/* Hero Section */}
-        <section className="hero-section">
-          <h2>Featured Products</h2>
-          <div className="hero-image">
-            {useCloudinary ? (
-              <AdvancedImage 
-                key={`hero-cloudinary-${cacheBreaker}`}
-                cldImg={getOptimizedImage('hero')} 
-                alt="Hero Product"
-                onLoad={() => console.log('Cloudinary hero image loaded')}
-                onError={(e) => console.error('Failed to load Cloudinary image:', e)}
-              />
-            ) : (
-              <img 
-                key={`hero-original-${cacheBreaker}`}
-                src={`${process.env.PUBLIC_URL}/hero.jpg?cache=${Date.now()}-${Math.random()}`} 
-                alt="Hero Product"
-                onLoad={() => console.log('Original hero image loaded')}
-                onError={(e) => console.error('Failed to load original image:', e)}
-              />
-            )}
-          </div>
-        </section>
-  
-        {/* Product Grid */}
-        <section className="products-section">
-          <h2>Our Premium Collection</h2>
-          <div className="product-grid">
-            {products.map(product => (
-              <div key={product.id} className="product-card">
-                <div className="product-image">
-                  {useCloudinary ? (
-                    <AdvancedImage 
-                      key={`cloudinary-${product.id}-${cacheBreaker}`}
-                      cldImg={getOptimizedImage(product.image)} 
-                      alt={product.name}
-                      onLoad={() => console.log(`Cloudinary ${product.name} loaded`)}
-                      onError={(e) => console.error(`Failed to load Cloudinary image for ${product.name}:`, e)}
-                    />
-                  ) : (
-                    <img 
-                      key={`original-${product.id}-${cacheBreaker}`}
-                      src={`${process.env.PUBLIC_URL}/${product.image}.jpg?cache=${Date.now()}-${Math.random()}`} 
-                      alt={product.name}
-                      onLoad={() => console.log(`Original ${product.name} loaded`)}
-                      onError={(e) => console.error(`Failed to load original image for ${product.name}:`, e)}
-                    />
-                  )}
-                </div>
-                <div className="product-info">
-                  <h3>{product.name}</h3>
-                  <p className="price">{product.price}</p>
-                  <button className="add-to-cart">Add to Cart</button>
-                </div>
+          {/* Control Panel */}
+          <div style={{ 
+            backgroundColor: '#f8f9fa', 
+            padding: '20px', 
+            borderRadius: '8px', 
+            marginBottom: '30px',
+            border: '1px solid #dee2e6'
+          }}>
+            <div style={{ marginBottom: '15px' }}>
+              <strong>Current Status:</strong> 
+              <span style={{ 
+                color: useCloudinary ? '#28a745' : '#dc3545',
+                marginLeft: '10px',
+                fontWeight: 'bold'
+              }}>
+                {useCloudinary ? '⚡ Cloudinary Optimized' : '🐌 Unoptimized Images'}
+              </span>
+              <div style={{ fontSize: '12px', marginTop: '5px', color: '#666' }}>
+                Debug: useCloudinary = {useCloudinary.toString()}, forceRerender = {forceRerender}
               </div>
-            ))}
+            </div>
+            
+            <button 
+              onClick={handleToggle}
+              disabled={isLoading}
+              style={{
+                backgroundColor: useCloudinary ? '#dc3545' : '#28a745',
+                color: 'white',
+                border: 'none',
+                padding: '12px 24px',
+                borderRadius: '6px',
+                fontSize: '16px',
+                fontWeight: 'bold',
+                cursor: isLoading ? 'not-allowed' : 'pointer',
+                opacity: isLoading ? '0.6' : '1'
+              }}
+            >
+              {isLoading ? '⏳ Loading...' : (
+                useCloudinary ? '🐌 Show Original (Slow)' : '⚡ Enable Cloudinary'
+              )}
+            </button>
           </div>
-        </section>
   
-        {/* Performance Stats */}
-        <div className="performance-stats">
-          <h3>Performance Impact</h3>
-          <div className="stats-grid">
-            <div className="stat">
-              <span className="label">Image Format:</span>
-              <span className="value">{useCloudinary ? 'Auto (WebP/AVIF)' : 'Original (JPEG)'}</span>
+          {/* Performance Hint */}
+          <div style={{ 
+            backgroundColor: '#e7f3ff', 
+            padding: '15px', 
+            borderRadius: '6px', 
+            marginBottom: '30px',
+            border: '1px solid #b8daff'
+          }}>
+            <p style={{ margin: '0 0 10px 0', color: '#004085' }}>
+              💡 <strong>Demo Tip:</strong> Open DevTools → Network tab to see the file size difference!
+            </p>
+            {!useCloudinary && (
+              <p style={{ margin: '0', color: '#721c24', backgroundColor: '#f8d7da', padding: '8px', borderRadius: '4px' }}>
+                ⚠️ Warning: Loading large unoptimized images...
+              </p>
+            )}
+          </div>
+  
+          {/* Product Grid */}
+          <section>
+            <h2 style={{ textAlign: 'center', marginBottom: '30px', color: '#333' }}>Our Premium Collection</h2>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
+              gap: '20px' 
+            }}>
+              {products.map(product => (
+                <div key={`${product.id}-${useCloudinary}-${forceRerender}`} style={{
+                  backgroundColor: 'white',
+                  borderRadius: '8px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  overflow: 'hidden',
+                  transition: 'transform 0.2s'
+                }}>
+                  <div style={{ height: '250px', overflow: 'hidden', backgroundColor: '#f8f9fa' }}>
+                  <div className="product-image">
+                    {useCloudinary && (
+                        <AdvancedImage 
+                        key={`cloud-${product.id}`}
+                        cldImg={getOptimizedImage(product.image)} 
+                        alt={product.name}
+                        style={{ width: '100%', height: '250px', objectFit: 'cover' }}
+                        />
+                    )}
+                    {!useCloudinary && (
+                        <img 
+                        key={`local-${product.id}`}
+                        src={`${process.env.PUBLIC_URL}/${product.image}.jpg`} 
+                        alt={product.name}
+                        style={{ width: '100%', height: '250px', objectFit: 'cover' }}
+                        />
+                    )}
+                    </div>
+                  </div>
+                  <div style={{ padding: '20px' }}>
+                    <h3 style={{ margin: '0 0 10px 0', color: '#333' }}>{product.name}</h3>
+                    <p style={{ 
+                      margin: '0 0 15px 0', 
+                      fontSize: '20px', 
+                      fontWeight: 'bold', 
+                      color: '#28a745' 
+                    }}>
+                      {product.price}
+                    </p>
+                    <button style={{
+                      backgroundColor: '#007bff',
+                      color: 'white',
+                      border: 'none',
+                      padding: '10px 20px',
+                      borderRadius: '4px',
+                      fontSize: '14px',
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      width: '100%'
+                    }}>
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="stat">
-              <span className="label">Compression:</span>
-              <span className="value">{useCloudinary ? 'Auto-optimized' : 'Uncompressed'}</span>
-            </div>
-            <div className="stat">
-              <span className="label">Resize:</span>
-              <span className="value">{useCloudinary ? 'Smart Crop (400x300)' : 'Original (4000px+)'}</span>
-            </div>
-            <div className="stat">
-              <span className="label">CDN:</span>
-              <span className="value">{useCloudinary ? 'Global Edge Network' : 'GitHub Pages'}</span>
+          </section>
+  
+          {/* Performance Stats */}
+          <div style={{ 
+            marginTop: '40px', 
+            backgroundColor: '#f8f9fa', 
+            padding: '20px', 
+            borderRadius: '8px' 
+          }}>
+            <h3 style={{ textAlign: 'center', marginBottom: '20px', color: '#333' }}>Performance Impact</h3>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+              gap: '15px' 
+            }}>
+              <div style={{ textAlign: 'center' }}>
+                <span style={{ fontWeight: 'bold', color: '#666' }}>Image Format:</span><br />
+                <span style={{ color: useCloudinary ? '#28a745' : '#dc3545' }}>
+                  {useCloudinary ? 'Auto (WebP/AVIF)' : 'Original (JPEG)'}
+                </span>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <span style={{ fontWeight: 'bold', color: '#666' }}>Compression:</span><br />
+                <span style={{ color: useCloudinary ? '#28a745' : '#dc3545' }}>
+                  {useCloudinary ? 'Auto-optimized' : 'Uncompressed'}
+                </span>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <span style={{ fontWeight: 'bold', color: '#666' }}>Resize:</span><br />
+                <span style={{ color: useCloudinary ? '#28a745' : '#dc3545' }}>
+                  {useCloudinary ? 'Smart Crop (400x300)' : 'Original (4000px+)'}
+                </span>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <span style={{ fontWeight: 'bold', color: '#666' }}>CDN:</span><br />
+                <span style={{ color: useCloudinary ? '#28a745' : '#dc3545' }}>
+                  {useCloudinary ? 'Global Edge Network' : 'Local Server'}
+                </span>
+              </div>
             </div>
           </div>
+  
+          {/* Debug Section */}
+          <div style={{ 
+            marginTop: '30px', 
+            backgroundColor: '#1a1a1a', 
+            color: '#00ff00', 
+            padding: '15px', 
+            borderRadius: '6px',
+            fontFamily: 'monospace',
+            fontSize: '12px'
+          }}>
+            <strong style={{ color: 'white' }}>🐛 Debug Info:</strong><br />
+            Current mode: {useCloudinary ? 'CLOUDINARY' : 'LOCAL'}<br />
+            Force rerender key: {forceRerender}<br />
+            Image keys will be: {products.map(p => `${useCloudinary ? 'cloudinary' : 'original'}-${p.id}-${forceRerender}`).join(', ')}
+          </div>
+  
+          {/* Footer */}
+          <footer style={{ 
+            textAlign: 'center', 
+            marginTop: '40px', 
+            padding: '20px', 
+            backgroundColor: '#343a40', 
+            color: 'white', 
+            borderRadius: '6px' 
+          }}>
+            <p style={{ margin: '0 0 10px 0' }}>💻 <strong>Monitor this performance with Datadog RUM</strong></p>
+            <p style={{ margin: '0 0 10px 0' }}>Track Core Web Vitals, page load times, and user experience metrics in real-time</p>
+            <div style={{ fontSize: '14px', opacity: '0.8' }}>
+              <p style={{ margin: '0' }}>🔧 <strong>Tech Stack:</strong> React + Cloudinary SDK + GitHub Actions + Datadog RUM</p>
+            </div>
+          </footer>
         </div>
-  
-        {/* Footer with Datadog Integration Note */}
-        <footer className="footer">
-          <p>💻 <strong>Monitor this performance with Datadog RUM</strong></p>
-          <p>Track Core Web Vitals, page load times, and user experience metrics in real-time</p>
-          <div style={{ marginTop: '10px', fontSize: '0.9em', opacity: '0.8' }}>
-            <p>🔧 <strong>Tech Stack:</strong> React + Cloudinary SDK + GitHub Actions + Datadog RUM</p>
-          </div>
-        </footer>
       </div>
     );
   }

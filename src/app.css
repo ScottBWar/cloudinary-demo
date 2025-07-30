@@ -109,6 +109,7 @@
     padding: 15px 20px;
     border-radius: 0 8px 8px 0;
     margin-bottom: 30px;
+    height:120px;
   }
   
   .performance-hint p {
@@ -243,6 +244,7 @@
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.1);
     margin-bottom: 30px;
+   
   }
   
   .performance-stats h3 {
