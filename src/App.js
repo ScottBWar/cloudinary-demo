@@ -18,11 +18,10 @@ const products = [
 ];
 
 function App() {
-    // Check URL for cloudinary parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const useCloudinary = urlParams.get('cloudinary') === 'true';
-    
-    const [isLoading, setIsLoading] = useState(false);
+    // Determine mode based on URL path
+    const isOptimizedRoute = window.location.pathname.includes('/optimized');
+    const isStandardRoute = window.location.pathname.includes('/standard');
+    const useCloudinary = isOptimizedRoute;
   
     // Initialize Cloudinary
     const cld = new Cloudinary({ cloud: { cloudName: 'dj7hg86pg' } });
@@ -45,7 +44,7 @@ function App() {
                 defaultPrivacyLevel: 'mask-user-input'
             });
             
-            console.log('🐕 DataDog RUM initialized - tracking page loads only');
+            console.log(`🐕 DataDog RUM initialized - tracking page: ${window.location.pathname}`);
         } catch (error) {
             console.error('❌ DataDog RUM initialization failed:', error);
         }
@@ -58,21 +57,14 @@ function App() {
         .quality('auto')
         .resize(auto().gravity(autoGravity()).width(400).height(300));
       
-      // Debug: Log the generated URL
       console.log(`🔗 Cloudinary URL for ${imageName}:`, img.toURL());
       return img;
     };
 
-    // Navigate to different mode
+    // Navigate to the other route
     const handleToggle = () => {
-      setIsLoading(true);
-      const newUrl = useCloudinary 
-        ? window.location.pathname // Remove cloudinary param
-        : `${window.location.pathname}?cloudinary=true`; // Add cloudinary param
-      
-      setTimeout(() => {
-        window.location.href = newUrl; // Full page reload for DataDog page load tracking
-      }, 300);
+      const targetPath = useCloudinary ? '/standard' : '/optimized';
+      window.location.href = `${window.location.origin}${targetPath}`;
     };
   
     return (
@@ -84,7 +76,7 @@ function App() {
             <h1 style={{ color: '#333', marginBottom: '10px' }}>SlowStore - Premium E-commerce</h1>
             <p style={{ color: '#666' }}>Experience the difference optimization makes</p>
             <div style={{ fontSize: '12px', color: '#28a745', marginTop: '5px' }}>
-              🐕 DataDog RUM Active - Page Load Tracking Only
+              🐕 DataDog RUM Active - Route: {window.location.pathname}
             </div>
           </header>
   
@@ -97,22 +89,21 @@ function App() {
             border: '1px solid #dee2e6'
           }}>
             <div style={{ marginBottom: '15px' }}>
-              <strong>Current Mode:</strong> 
+              <strong>Current Route:</strong> 
               <span style={{ 
                 color: useCloudinary ? '#28a745' : '#dc3545',
                 marginLeft: '10px',
                 fontWeight: 'bold'
               }}>
-                {useCloudinary ? '⚡ Cloudinary Optimized' : '🐌 Unoptimized Images'}
+                {useCloudinary ? '⚡ /optimized (Cloudinary)' : '🐌 /standard (Unoptimized)'}
               </span>
               <div style={{ fontSize: '12px', marginTop: '5px', color: '#666' }}>
-                URL: {window.location.href}
+                Path: {window.location.pathname}
               </div>
             </div>
             
             <button 
               onClick={handleToggle}
-              disabled={isLoading}
               style={{
                 backgroundColor: useCloudinary ? '#dc3545' : '#28a745',
                 color: 'white',
@@ -121,13 +112,10 @@ function App() {
                 borderRadius: '6px',
                 fontSize: '16px',
                 fontWeight: 'bold',
-                cursor: isLoading ? 'not-allowed' : 'pointer',
-                opacity: isLoading ? '0.6' : '1'
+                cursor: 'pointer'
               }}
             >
-              {isLoading ? '⏳ Loading...' : (
-                useCloudinary ? '🐌 Switch to Original (Slow)' : '⚡ Switch to Cloudinary'
-              )}
+              {useCloudinary ? '🐌 Go to /standard (Unoptimized)' : '⚡ Go to /optimized (Fast)'}
             </button>
           </div>
   
@@ -140,15 +128,15 @@ function App() {
             border: '1px solid #b8daff'
           }}>
             <p style={{ margin: '0 0 10px 0', color: '#004085' }}>
-              💡 <strong>Demo Tip:</strong> Each mode switch triggers a full page reload for DataDog tracking
+              💡 <strong>DataDog Monitoring:</strong> Each route will appear as separate views in your dashboard
             </p>
             <p style={{ margin: '0 0 10px 0', color: '#004085' }}>
-              🐕 <strong>DataDog:</strong> Recording page load performance for each mode
+              🐕 <strong>Clean Analytics:</strong> Compare performance metrics between routes
             </p>
             <p style={{ margin: '0', fontSize: '12px', color: '#004085' }}>
-              📋 <strong>URLs:</strong><br />
-              • Unoptimized: {window.location.origin}{window.location.pathname}<br />
-              • Optimized: {window.location.origin}{window.location.pathname}?cloudinary=true
+              📋 <strong>Routes:</strong><br />
+              • Standard: {window.location.origin}/standard<br />
+              • Optimized: {window.location.origin}/optimized
             </p>
           </div>
   
@@ -268,9 +256,9 @@ function App() {
             fontSize: '12px'
           }}>
             <strong style={{ color: 'white' }}>🐛 Debug Info:</strong><br />
-            Current mode: {useCloudinary ? 'CLOUDINARY' : 'LOCAL'}<br />
-            URL Parameter: cloudinary={urlParams.get('cloudinary') || 'not set'}<br />
-            DataDog RUM: Tracking page loads only<br />
+            Current route: {window.location.pathname}<br />
+            Mode: {useCloudinary ? 'CLOUDINARY' : 'LOCAL'}<br />
+            DataDog view name: {window.location.pathname}<br />
           </div>
   
           {/* Footer */}
@@ -282,10 +270,10 @@ function App() {
             color: 'white', 
             borderRadius: '6px' 
           }}>
-            <p style={{ margin: '0 0 10px 0' }}>💻 <strong>Monitor page load performance with Datadog RUM</strong></p>
-            <p style={{ margin: '0 0 10px 0' }}>Compare page load times between optimized and unoptimized versions</p>
+            <p style={{ margin: '0 0 10px 0' }}>💻 <strong>DataDog RUM: Separate Route Tracking</strong></p>
+            <p style={{ margin: '0 0 10px 0' }}>Clean performance comparison between optimized and unoptimized routes</p>
             <div style={{ fontSize: '14px', opacity: '0.8' }}>
-              <p style={{ margin: '0' }}>🔧 <strong>Tech Stack:</strong> React + Cloudinary SDK + GitHub Actions + Datadog RUM</p>
+              <p style={{ margin: '0' }}>🔧 <strong>Routes:</strong> /standard vs /optimized</p>
             </div>
           </footer>
         </div>
